@@ -1,0 +1,22 @@
+    <title>Chat - {{ class_id }}</title>
+</head>
+<body>
+    <h1>Chat Room - {{ class_id }}</h1>
+
+    <div>
+        {% for message in messages %}
+        <p>{{ message.username }} ({{ message.sent_at.strftime('%Y-%m-%d %H:%M:%S') }}): {{ message.content }}</p>
+
+        {% endfor %}
+    </div>
+
+    <form method="POST" action="{{ url_for('send_message', class_id=class_id) }}">
+        <label for="content">Your message:</label>
+        <input type="text" id="content" name="content" required>
+        <button type="submit">Send</button>
+    </form>
+
+    <a href="{{ url_for('classes') }}">Back to Classes</a>
+</body>
+</html>
+

@@ -1,0 +1,23 @@
+    <title>Classes</title>
+</head>
+<body>
+	<p>Olet kirjautunut nimellä {{ session.username }}</p>
+
+    <h1>Join classes or create new</h1>
+
+    <ul>
+        {% for class in classes %}
+            <li>{{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join</a></li>
+        {% endfor %}
+    </ul>
+
+    <form method="POST" action="{{ url_for('classes') }}">
+        <label for="class_name">New Class Name:</label>
+        <input type="text" id="class_name" name="class_name" required>
+        <button type="submit">Add Class</button>
+        
+        <a href="{{ url_for('logout') }}">Logout</a>
+
+    </form>
+</body>
+</html>
