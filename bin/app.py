@@ -1,4 +1,4 @@
-from flask import Flask, session
+from flask import Flask
 from os import getenv
 from flask_sqlalchemy import SQLAlchemy
 

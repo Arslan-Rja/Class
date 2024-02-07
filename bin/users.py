@@ -1,13 +1,13 @@
-from app import app, db
+from app import db
 from os import getenv
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.sql import text
 from flask import session
-
+from sqlalchemy.exc import SQLAlchemyError
 
 
 def login(username, password):
-    sql = text("SELECT id, password FROM users WHERE username=:username")
+    sql = text("SELECT id, password, teacher FROM users WHERE username=:username")
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()
     if not user:
@@ -16,22 +16,25 @@ def login(username, password):
         if check_password_hash(user.password, password):
             session["user_id"] = user.id
             session["username"] = username
-
+            session["teacher"] = user.teacher
             return True
         else:
             return False
 
 
-def register(username, password):
+def register(username, password, teacher, teachercode):
     hash_value = generate_password_hash(password)
-    try:
-        sql = text("INSERT INTO users (username, password) VALUES (:username, :password)")
-        db.session.execute(sql, {"username":username, "password":hash_value})
-        db.session.commit()
-    except:
-        return False
-    return login(username, password)
     
+    sql_insert_user = text("INSERT INTO users (username, password, teacher) VALUES (:username, :password, :teacher)")
+    db.session.execute(sql_insert_user, {"username": username, "password": hash_value, "teacher": teacher})
+    db.session.commit()
+
+    if teacher and teachercode == "TEACHER":
+        sql_update_teacher = text("UPDATE users SET teacher = true WHERE username = :username")
+        db.session.execute(sql_update_teacher, {"username": username})
+        db.session.commit()
+
+    return True
 	
 def get_classes():
 
@@ -48,10 +51,21 @@ def get_class_info(class_id):
     return class_info
 
 def add_class(class_name):
+    teacher = session.get("teacher", False)
+    
+    if teacher:
+        try:
+            sql = text("INSERT INTO classes (name) VALUES (:class_name)")
+            db.session.execute(sql, {"class_name": class_name})
+            db.session.commit()
+            return True
+        except:
+            db.session.rollback()
+            return False
+    else:
+        return False
 
-    sql = text("INSERT INTO classes (name) VALUES (:class_name)")
-    db.session.execute(sql, {"class_name": class_name})
-    db.session.commit()
+        
     
 def send_message(user_id, class_id, content):
         sql = text("INSERT INTO messages (user_id, class_id, content) VALUES (:user_id, :class_id, :content)")
@@ -59,12 +73,25 @@ def send_message(user_id, class_id, content):
         db.session.commit()
 
 def get_messages(class_id):
-    sql = text("SELECT m.content, u.username, m.sent_at FROM messages m JOIN users u ON m.user_id = u.id WHERE m.class_id = :class_id ORDER BY m.sent_at")
+    sql = text("SELECT m.id, m.user_id, m.content, u.username, m.sent_at FROM messages m JOIN users u ON m.user_id = u.id WHERE m.class_id = :class_id ORDER BY m.sent_at")
     result = db.session.execute(sql, {"class_id": class_id})
     messages = result.fetchall()
     return messages
+
+
     
-    
+def edit_message(message_id, editted):
+    sql = text("UPDATE messages SET content = :editted WHERE id = :message_id")
+    db.session.execute(sql, {"message_id": message_id, "editted": editted})
+    db.session.commit()
+
+def delete_message(message_id):
+    sql = text("DELETE FROM messages WHERE id = :message_id")
+    db.session.execute(sql, {"message_id": message_id})
+    db.session.commit()
+
+
+
 def logout():
 	del session["user_id"]
   

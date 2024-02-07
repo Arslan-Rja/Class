@@ -3,6 +3,7 @@ import users
 from flask import render_template
 from flask import Flask, render_template, request, redirect, url_for, session
 
+
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "GET":
@@ -23,7 +24,9 @@ def register():
     if request.method == "POST":
         username = request.form["username"]
         password = request.form["password"]
-        if users.register(username, password):
+        userType = request.form["userType"]
+        teachercode = request.form["teachercode"]
+        if users.register(username, password, userType, teachercode):
             return redirect("/classes")
         else:
             return render_template("error.html")
@@ -58,6 +61,20 @@ def send_message(class_id):
     user_id = session.get("user_id")
     users.send_message(user_id, class_id, content)
     return redirect(url_for("chat", class_id=class_id))
+    
+    
+    
+@app.route("/edit_message/<int:message_id>/<int:class_id>", methods=["POST"])
+def edit_message(message_id, class_id):
+    editted = request.form.get("editted")
+    users.edit_message(message_id, editted)
+    return redirect(url_for("chat", class_id=class_id))
+
+@app.route("/delete_message/<int:message_id>/<int:class_id>", methods=["POST"])
+def delete_message(message_id, class_id):
+    users.delete_message(message_id)
+    return redirect(url_for("chat", class_id=class_id))
+    
 
 @app.route("/chat/<int:class_id>")
 def chat(class_id):
@@ -66,8 +83,6 @@ def chat(class_id):
 
 @app.route('/logout')
 def logout():
-    if "user_id" in session:
-        del session["user_id"]
-    return redirect(url_for("login"))
-    
+    session.pop('user_id', None)
+    return redirect(url_for('index'))
 
