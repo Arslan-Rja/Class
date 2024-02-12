@@ -1,31 +1,71 @@
-<body>
-    <h1>Wilson School ClassRoom</h1>
-    <p><a href="{{ url_for('register') }}">Register</a></p> 
-    <p><a href="{{ url_for('login') }}">Log In</a></p>
-</body>
-</html>
-
-
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 100px;
+            max-width: 500px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #d2cfcf;
+            padding: 50px;
+            border-radius: 40px;
+            box-shadow: 20px 20px 20px 20px rgba(1,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"],
+        select,
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5a5151;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #413e3e;
+        }
+    </style>
 </head>
 <body>
-    <h1>Sign Up</h1>
-    <form method="post">
-        <label for="username">Username:</label>
-        <input type="text" name="username" required><br>
-        <label for="password">Password:</label>
-        <input type="password" name="password" required><br>
-        <label for="userType">Are you a teacher?</label>
-        <select name="userType" id="userType" required>
-            <option value="false">No</option>
-            <option value="true">Yes</option>
-        </select><br>
-        <label for="teachercode">Teacher Code:</label>
-        <input type="text" name="teachercode"><br>
-        <input type="submit" value="Sign Up">
-    </form>
+    <div class="container">
+        <h1>Sign Up</h1>
+        <form method="post" action="{{ url_for('register') }}">
+            <label for="username">Username:</label>
+            <input type="text" name="username" required><br>
+            <label for="password">Password:</label>
+            <input type="password" name="password" required><br>
+            <label for="userType">Are you a teacher?</label>
+            <select name="userType" id="userType" required>
+                <option value="false">No</option>
+                <option value="true">Yes</option>
+            </select><br>
+            <label for="teachercode">Teacher Code:</label>
+            <input type="text" name="teachercode"><br>
+            <button type="submit">Sign Up</button>
+		<a href="{{ url_for('index') }}"><button type="button">Back to login</button></a>
+
+        </form>
+    </div>
 </body>
 </html>
 

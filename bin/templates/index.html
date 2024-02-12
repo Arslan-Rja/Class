@@ -1,20 +1,60 @@
 <!DOCTYPE html>
-<link rel="stylesheet" type="text/css" href="styles.css">
-
-
-<style>
-h1 {text-align: center;}
-p {text-align: center;}
-div {text-align: center;}
-</style>
-
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 100px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #d2cfcf;
+            padding: 100px;
+            border-radius: 40px;
+            box-shadow: 20px 20px 20px 20px rgba(1,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        input[type="text"],
+        input[type="password"],
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 50px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            background-color: #5a5151;
+            color: #fff;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #413e3e;
+        }
+    </style>
 </head>
-
 <body>
-    <h1>Wilson School ClassRoom</h1>
-    <p><a href="{{ url_for('register') }}">Register</a></p> 
-    <p><a href="{{ url_for('login') }}">Log In</a></p>
+    <div class="container">
+        <h1>Web ClassRooms</h1>
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="text" name="username" placeholder="Username" required>
+            <input type="password" name="password" placeholder="Password" required>
+            <button type="submit">Login</button>
+        </form>
+        <p>Don't have an account? <a href="{{ url_for('register') }}">Register</a></p>
+    </div>
 </body>
 </html>
-
 

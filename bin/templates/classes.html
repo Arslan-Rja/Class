@@ -1,23 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Classes</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 100px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #d2cfcf;
+            padding: 100px;
+            border-radius: 40px;
+            box-shadow: 20px 20px 20px 20px rgba(1,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+        }
+        li {
+            text-align: left;
+            list-style-type: none;
+            margin-bottom: 10px;
+            padding: 10px;
+            margin: 20px;
+            border-radius: 40px;
+            margin-top: 10px;
+            background-color: #f3f3f3
+            
+        }
+        a {
+            text-align: left;
+            color: blue;
+
+        }
+        button {
+            background-color: #5a5151;
+            color: #fff;
+            cursor: pointer;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 50px;
+        }
+        button:hover {
+            background-color: #413e3e;
+        }
+    </style>
 </head>
 <body>
-	<p>Olet kirjautunut nimellä {{ session.username }}</p>
+    <div class="container">
+        Welcome back, <b>{{ session.username }}</b>
+        <h1>Available Classes</h1>
 
-    <h1>Join classes or create new</h1>
-
-    <ul>
-        {% for class in classes %}
-            <li>{{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join</a></li>
+        {% for class in classes|sort (attribute='name') %}
+            <li>{{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join </li> </a>
         {% endfor %}
-    </ul>
 
-    <form method="POST" action="{{ url_for('classes') }}">
-        <label for="class_name">New Class Name:</label>
-        <input type="text" id="class_name" name="class_name" required>
-        <button type="submit">Add Class</button>
-        
-        <a href="{{ url_for('index') }}">Logout</a>
+        {% if session.get("teacher", False) %}
+            <form method="POST" action="{{ url_for('classes') }}">
+                <label for="class_name">New Class Name:</label>
+                <input type="text" id="class_name" name="class_name" required>
+                <button type="submit">Add Class</button>
+            </form>
+        {% endif %}
 
-    </form>
+        <form method="GET" action="{{ url_for('index') }}">
+            <button type="submit">Logout</button>
+        </form>
+    </div>
 </body>
 </html>
+

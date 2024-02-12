@@ -29,7 +29,8 @@ def register():
         if users.register(username, password, userType, teachercode):
             return redirect("/classes")
         else:
-            return render_template("error.html")
+            return render_template("errorTeachercode.html")
+
 
 @app.route("/")
 def index():

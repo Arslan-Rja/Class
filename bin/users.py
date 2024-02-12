@@ -3,7 +3,6 @@ from os import getenv
 from werkzeug.security import check_password_hash, generate_password_hash
 from sqlalchemy.sql import text
 from flask import session
-from sqlalchemy.exc import SQLAlchemyError
 
 
 def login(username, password):
@@ -22,19 +21,26 @@ def login(username, password):
             return False
 
 
-def register(username, password, teacher, teachercode):
+def register(username, password, userType, teachercode):
     hash_value = generate_password_hash(password)
     
-    sql_insert_user = text("INSERT INTO users (username, password, teacher) VALUES (:username, :password, :teacher)")
-    db.session.execute(sql_insert_user, {"username": username, "password": hash_value, "teacher": teacher})
+    sql = text("INSERT INTO users (username, password, teacher) VALUES (:username, :password, :teacher)")
+    db.session.execute(sql, {"username": username, "password": hash_value, "teacher": userType == "true"})
     db.session.commit()
 
-    if teacher and teachercode == "TEACHER":
-        sql_update_teacher = text("UPDATE users SET teacher = true WHERE username = :username")
-        db.session.execute(sql_update_teacher, {"username": username})
-        db.session.commit()
 
+    if userType == "true":
+        if teachercode != "TEACHER":
+            return False
+        else:
+            sql_update_teacher = text("UPDATE users SET teacher = true WHERE username = :username")
+            db.session.execute(sql_update_teacher, {"username": username})
+            db.session.commit()
+        
+    login(username, password)
+   
     return True
+	
 	
 def get_classes():
 

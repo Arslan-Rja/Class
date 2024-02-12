@@ -1,14 +1,25 @@
+<!DOCTYPE html>
+<link rel="stylesheet" type="text/css" href="styles.css">
+
+
+<style>
+h1 {text-align: center;}
+p {text-align: center;}
+div {text-align: center;}
+body {text-align: center;}
+</style>
+
 <body>
     <h1>Wilson School ClassRoom</h1>
-    <p><a href="{{ url_for('register') }}">Register</a></p>
-    <p><a href="{{ url_for('login') }}">Log In</a></p>
-</body>
-</html>
+<form method="GET" action="{{ url_for('register') }}">
+    		<button type="submit">Register</button>
+	</form>
+	
+<form method="GET" action="{{ url_for('login') }}">
+    		<button type="submit">Login</button>
+	</form>
 
 
-
-</head>
-<body>
     <h1>Login</h1>
     <form method="post">
         <label for="username">Username:</label>
