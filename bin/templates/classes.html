@@ -34,6 +34,8 @@
             background-color: #f3f3f3
             
         }
+        
+               
         a {
             text-align: left;
             color: blue;
@@ -58,16 +60,29 @@
         Welcome back, <b>{{ session.username }}</b>
         <h1>Available Classes</h1>
 
-        {% for class in classes|sort (attribute='name') %}
-            <li>{{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join </li> </a>
-        {% endfor %}
-
+        {% for class in classes|sort(attribute='name') %}
+            <li>
+                {{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join</a>
+		</li>
+		
+		<li1>
+                {% if session.get("teacher", False) %}
+  		<form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST">
+    			<input type="hidden" name="class_id" value="{{ class.id }}">
+    			<input type="submit" value="Delete">
+  		</form>
+	{% endif %}
+		</li1>
+	{% endfor %}
+	
         {% if session.get("teacher", False) %}
             <form method="POST" action="{{ url_for('classes') }}">
                 <label for="class_name">New Class Name:</label>
                 <input type="text" id="class_name" name="class_name" required>
                 <button type="submit">Add Class</button>
             </form>
+            
+            
         {% endif %}
 
         <form method="GET" action="{{ url_for('index') }}">

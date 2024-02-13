@@ -1,6 +1,5 @@
 from app import app
 import users
-from flask import render_template
 from flask import Flask, render_template, request, redirect, url_for, session
 
 
@@ -16,7 +15,6 @@ def login():
         else:
             return render_template("error.html")
             
-
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if request.method == "GET":
@@ -31,18 +29,15 @@ def register():
         else:
             return render_template("errorTeachercode.html")
 
-
 @app.route("/")
 def index():
 	return render_template('index.html')
-
 
 @app.route("/classes", methods=["GET", "POST"])
 def classes():
     if request.method == "GET":
         classes_list = users.get_classes()
         return render_template("classes.html", classes=classes_list)
-
     elif request.method == "POST":
         class_name = request.form["class_name"]
         users.add_class(class_name)
@@ -54,6 +49,10 @@ def join_class(class_id):
     class_info = users.get_class_info(class_id)
     return redirect(url_for("chat", class_id=class_id))
 
+@app.route("/delete_class/<int:class_id>", methods=["POST"])
+def delete_class(class_id):
+    result = users.delete_class(class_id)
+    return redirect(url_for("classes"))
 
 
 @app.route("/send_message/<int:class_id>", methods=["POST"])
@@ -63,8 +62,6 @@ def send_message(class_id):
     users.send_message(user_id, class_id, content)
     return redirect(url_for("chat", class_id=class_id))
     
-    
-    
 @app.route("/edit_message/<int:message_id>/<int:class_id>", methods=["POST"])
 def edit_message(message_id, class_id):
     editted = request.form.get("editted")
@@ -73,9 +70,9 @@ def edit_message(message_id, class_id):
 
 @app.route("/delete_message/<int:message_id>/<int:class_id>", methods=["POST"])
 def delete_message(message_id, class_id):
-    users.delete_message(message_id)
+    user_id = session.get("user_id")
+    result = users.delete_message(message_id, user_id)
     return redirect(url_for("chat", class_id=class_id))
-    
 
 @app.route("/chat/<int:class_id>")
 def chat(class_id):

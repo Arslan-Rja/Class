@@ -20,37 +20,29 @@ def login(username, password):
         else:
             return False
 
-
 def register(username, password, userType, teachercode):
     hash_value = generate_password_hash(password)
-    
     sql = text("INSERT INTO users (username, password, teacher) VALUES (:username, :password, :teacher)")
     db.session.execute(sql, {"username": username, "password": hash_value, "teacher": userType == "true"})
     db.session.commit()
-
-
     if userType == "true":
         if teachercode != "TEACHER":
             return False
         else:
-            sql_update_teacher = text("UPDATE users SET teacher = true WHERE username = :username")
-            db.session.execute(sql_update_teacher, {"username": username})
+            sql = text("UPDATE users SET teacher = true WHERE username = :username")
+            db.session.execute(sql, {"username": username})
             db.session.commit()
         
     login(username, password)
-   
     return True
-	
-	
+		
 def get_classes():
-
     sql = text("SELECT id, name FROM classes")
     result = db.session.execute(sql)
     classes = result.fetchall()
     return classes
 
 def get_class_info(class_id):
-
     sql = text("SELECT id, name FROM classes WHERE id = :class_id")
     result = db.session.execute(sql, {"class_id": class_id})
     class_info = result.fetchone()
@@ -58,7 +50,6 @@ def get_class_info(class_id):
 
 def add_class(class_name):
     teacher = session.get("teacher", False)
-    
     if teacher:
         try:
             sql = text("INSERT INTO classes (name) VALUES (:class_name)")
@@ -71,7 +62,22 @@ def add_class(class_name):
     else:
         return False
 
-        
+def delete_class(class_id):
+    teacher = session.get("teacher", False)
+    if teacher:
+        try:
+            sql = text("DELETE FROM messages WHERE class_id = :class_id")
+            db.session.execute(sql, {"class_id": class_id})
+            
+            sql = text("DELETE FROM classes WHERE id = :class_id")
+            db.session.execute(sql, {"class_id": class_id})
+            db.session.commit()            
+            return True
+        except:
+            db.session.rollback()
+            return False
+    else:
+        return False
     
 def send_message(user_id, class_id, content):
         sql = text("INSERT INTO messages (user_id, class_id, content) VALUES (:user_id, :class_id, :content)")
@@ -84,21 +90,28 @@ def get_messages(class_id):
     messages = result.fetchall()
     return messages
 
-
-    
 def edit_message(message_id, editted):
     sql = text("UPDATE messages SET content = :editted WHERE id = :message_id")
     db.session.execute(sql, {"message_id": message_id, "editted": editted})
     db.session.commit()
 
-def delete_message(message_id):
-    sql = text("DELETE FROM messages WHERE id = :message_id")
-    db.session.execute(sql, {"message_id": message_id})
-    db.session.commit()
+def delete_message(message_id, user_id):
+    sql = text("SELECT user_id FROM messages WHERE id = :message_id")
+    result = db.session.execute(sql, {"message_id": message_id})
+    message = result.fetchone()
 
-
+    teacher = session.get("teacher", False)
+    if teacher or message.user_id == user_id:
+        try:
+            sql = text("DELETE FROM messages WHERE id = :message_id")
+            db.session.execute(sql, {"message_id": message_id})
+            db.session.commit()
+            return True
+        except:
+            db.session.rollback()
+            return False
+    else:
+        return False
 
 def logout():
 	del session["user_id"]
-  
-    
