@@ -1,0 +1,63 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - {{ class_id }}</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #d2cfcf;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 20px 20px 20px 20px rgba(1,0,0,0.1);
+            position: relative;
+        }
+        form {
+            text-align: left;
+            margin-top: 20px;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            display: block;
+            margin-top: 20px;
+        }
+        li {
+            margin-top: 30px;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #b3b3b3;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            text-align: left;
+            list-style: none;   
+        }
+    </style>
+</head>
+<body>
+    <h1>Search Results</h1>
+
+    <ul>
+        {% for result in results %}
+            <li>
+                <strong>Message:</strong> {{ result.content }}<br>
+                <strong>Sent By:</strong> {{ result.username }}<br>
+                <strong>Sent At:</strong> {{ result.sent_at.strftime('%Y-%m-%d %H:%M:%S') }}<br>
+
+            </li>
+            <br>
+        {% endfor %}
+    </ul>
+     <a href="{{ url_for('classes') }}">Back to Classes</a>
+</body>
+</html>

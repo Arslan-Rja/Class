@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat - {{ class_id }}</title>
+    <style>
+        body {
+            text-align: center;
+            background-color: #f3f3f3;
+            font-family: Arial, sans-serif;
+        }
+        .container {
+            margin-top: 50px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            background-color: #d2cfcf;
+            padding: 20px;
+            border-radius: 20px;
+            box-shadow: 20px 20px 20px 20px rgba(1,0,0,0.1);
+            position: relative;
+        }
+        h1 {
+            color: #333;
+        }
+        p {
+            text-align: left;
+            margin-bottom: 1px;
+        }
+        form {
+            text-align: left;
+            margin-top: 20px;
+        }
+        input[type="text"],
+        button {
+            width: 50%;
+            padding: 8px;
+            margin-top: 0px;
+            margin-bottom: 0px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-sizing: border-box;
+            font-size: 16px;
+        }
+        button {
+            width: 10%;
+            padding: 2px;
+            background-color: #5a5151;
+            color: #fff;
+            cursor: pointer;
+            
+        }
+        button:hover {
+            background-color: #413e3e;
+        }
+        a {
+            text-decoration: none;
+            color: #007bff;
+            display: block;
+            margin-top: 20px;
+        
+        }
+        li {
+        
+        	margin-top: 30px;
+            max-width: 500px;
+            margin-left: 10px;
+            margin-right: 10px;
+            background-color: #b3b3b3;
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            list-style: none
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Favorited Messages</h1>
+
+        
+    {% for favorite in favorite_messages %}
+        <li>
+            <p>Time: {{ favorite.sent_at.strftime('%Y-%m-%d %H:%M:%S') }}</p>
+            <p>User: {{ favorite.username }}</p>
+            <p>Message: {{ favorite.content }}</p>
+        </li>
+    {% endfor %}
+
+        <a href="{{ url_for('classes') }}">Back to Classes</a>
+    </div>
+</body>
+</html>
+

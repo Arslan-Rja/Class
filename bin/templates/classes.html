@@ -11,7 +11,7 @@
             font-family: Arial, sans-serif;
         }
         .container {
-            margin-top: 100px;
+            margin-top: 20px;
             max-width: 400px;
             margin-left: auto;
             margin-right: auto;
@@ -32,63 +32,65 @@
             border-radius: 40px;
             margin-top: 10px;
             background-color: #f3f3f3
-            
         }
+        form {
         
-               
-        a {
-            text-align: left;
-            color: blue;
-
-        }
-        button {
-            background-color: #5a5151;
-            color: #fff;
-            cursor: pointer;
-            padding: 10px;
+            text-align: center;
             margin-top: 10px;
-            border: none;
-            border-radius: 50px;
         }
         button:hover {
-            background-color: #413e3e;
+            background-color: #8674;
         }
+        
     </style>
 </head>
 <body>
+
+    <h1>Classes</h1>
+    <p>There are {{ total_classes }} classes and {{ total_messages }} messages in total.</p>
+
+    <form action="/search" method="get">
+        <label for="search">Search:</label>
+        <input type="text" id="search" name="q">
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{{ url_for('favorites', user_id=session.user_id) }}">Favorites</a>
+
     <div class="container">
         Welcome back, <b>{{ session.username }}</b>
         <h1>Available Classes</h1>
 
-        {% for class in classes|sort(attribute='name') %}
+        <ul>
+            {% for class in classes|sort(attribute='name') %}
             <li>
                 {{ class.name }} - <a href="{{ url_for('join_class', class_id=class.id) }}">Join</a>
-		</li>
-		
-		<li1>
+
                 {% if session.get("teacher", False) %}
-  		<form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST">
-    			<input type="hidden" name="class_id" value="{{ class.id }}">
-    			<input type="submit" value="Delete">
-  		</form>
-	{% endif %}
-		</li1>
-	{% endfor %}
-	
+                <form action="{{ url_for('delete_class', class_id=class.id) }}" method="POST">
+                    <input type="hidden" name="class_id" value="{{ class.id }}">
+                    <input type="submit" value="Delete">
+                </form>
+                {% endif %}
+
+            </li>
+            {% endfor %}
+
+        </ul>
+
         {% if session.get("teacher", False) %}
-            <form method="POST" action="{{ url_for('classes') }}">
-                <label for="class_name">New Class Name:</label>
-                <input type="text" id="class_name" name="class_name" required>
-                <button type="submit">Add Class</button>
-            </form>
-            
-            
+        <form method="POST" action="{{ url_for('classes') }}">
+            <label for="class_name">New Class Name:</label>
+            <input type="text" id="class_name" name="class_name" required>
+            <button type="submit">Add Class</button>
+        </form>
         {% endif %}
 
-        <form method="GET" action="{{ url_for('index') }}">
+        <form action="{{ url_for('logout') }}" method="POST">
             <button type="submit">Logout</button>
         </form>
+
     </div>
 </body>
-</html>
 
+</html>
